@@ -17,17 +17,20 @@ Key Features:
     - Maintains transaction history in a stack data structure
     - Can return a list of past transactions in reverse order
     - Provides functions for clearing the stack and checking its status
+
+Made by kıdı :D
 """
 
 from datetime import datetime
 
 class Transaction:
-    def __init__(self, type, amount, new_balance):
+    def __init__(self, type, amount, new_balance, description=""):
         """O(1) - Initializes a transaction with timestamp, type, amount, and new balance."""
         self.timestamp = datetime.now()
         self.type = type
         self.amount = amount
         self.new_balance = new_balance
+        self.description = description
 
     def __str__(self):
         """O(1) - Returns a formatted string representation of the transaction."""
@@ -41,33 +44,33 @@ class TransactionStack:
         self.items = []
 
     def push(self,transaction): 
-        """O(1) - This method adds the new operation to stack."""
+        """O(1) - This function adds the new operation to stack."""
         self.items.append(transaction)
 
     def pop(self):
-        """O(1) - This method removes the last operation from the stack."""
+        """O(1) - This function removes the last operation from the stack."""
         if self.isEmpty():
             return "Stack is Empty"
         return self.items.pop()
     
     def peek(self):
-        """O(1) - This method shows the last operation in the stack without removing."""
+        """O(1) - This function shows the last operation in the stack without removing."""
         if self.isEmpty():
             return "Stack is Empty"
         return self.items[-1]
     
     def isEmpty(self):
-        """O(1) - This method checks stack is empty or not."""
+        """O(1) - This function checks stack is empty or not."""
         return len(self.items) == 0
 
     def size(self):
-        """O(1) - This method returns the size of stack."""
+        """O(1) - This function returns the size of stack."""
         return len(self.items)
     
     def get_transaction_history(self):
-        """O(n) - This method returns the transaction list in reverse order to display the most recent transactions first."""
+        """O(n) - This function returns the transaction list in reverse order to display the most recent transactions first."""
         return self.items[::-1]
     
     def clear_stack(self):
-        """O(1) - This method removes all transactions from the stack, making it empty."""
+        """O(1) - This function removes all transactions from the stack, making it empty."""
         self.items.clear()
