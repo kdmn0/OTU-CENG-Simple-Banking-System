@@ -17,124 +17,137 @@ Key Features:
 
 from account import Account
 
+
 class Bank:
+
     def __init__(self):
-        """O(1) - Initializes the bank with an empty collection of accounts."""
-        self.accounts = {}
+        """O(1) - Initializes the Bank with an empty accounts dictionary and sets the initial account number to 1001."""
+        self.__accounts = {}
+        self.__next_account_number = 1001
 
-    def create_account(self, account_number, holder_name, initial_balance=0):
-        """O(1) - Creates a new account if the account number does not already exist."""
-        if not account_number or not holder_name:
-            return False, "Account number and holder name cannot be empty."
+    def get_total_accounts(self):
+        """O(1) - Returns the total number of accounts in the bank."""
+        return len(self.__accounts)
+
+    def create_account(self, holder_name, initial_balance=0):
+        """
+        O(1) - Creates a new account with the given holder name and initial balance.
+        Args: holder_name (str), initial_balance (float)
+        Returns: account_number (int) or None if invalid input
+        """
+        if holder_name == "" or initial_balance < 0:
+            return None
         
-        if self.account_exists(account_number):
-            return False, "An account with this number already exists."
+        account_number = self.__next_account_number
+        self.__next_account_number += 1
         
-        # Parse initial_balance as float to allow checking > 0 without TypeError against string "0"
-        try:
-            balance_val = float(initial_balance)
-        except ValueError:
-            return False, "Initial balance must be a number."
-
-        if balance_val < 0:
-            return False, "Initial balance cannot be negative."
-
-        new_account = Account(account_number, holder_name, balance_val)
-        self.accounts[account_number] = new_account
-        return True, "Account created successfully."
+        account = Account(account_number, holder_name, initial_balance)
+        self.__accounts[account_number] = account
+        return account_number
 
     def get_account(self, account_number):
-        """O(1) - Retrieves an account by its number."""
-        return self.accounts.get(account_number)
+        """
+        O(1) - Retrieves an account by account number using dictionary lookup.
+        Args: account_number (int)
+        Returns: Account object or None if not found
+        """
+        return self.__accounts.get(account_number)
 
     def account_exists(self, account_number):
-        """O(1) - Checks if an account with the given number exists."""
-        return account_number in self.accounts
+        """
+        O(1) - Checks if an account with the given number exists in the bank.
+        Args: account_number (int)
+        Returns: bool
+        """
+        return account_number in self.__accounts
 
     def deposit(self, account_number, amount):
-        """O(1) - Deposits money into the specified account."""
-        account = self.get_account(account_number)
-        if not account:
-            return False, "Account not found."
-        
-        success = account.deposit(amount)
-        if success:
-            return True, "Deposit successful."
-        else:
-            return False, "Invalid deposit amount."
+        """
+        O(1) - Deposits money into the specified account. Delegates to Account.deposit().
+        Args: account_number (int), amount (float)
+        Returns: bool - True if successful, False otherwise
+        """
+        account = self.__accounts.get(account_number)
+        return account.deposit(amount)
 
     def withdraw(self, account_number, amount):
-        """O(1) - Withdraws money from the specified account."""
-        account = self.get_account(account_number)
-        if not account:
-            return False, "Account not found."
-        
-        success = account.withdraw(amount)
-        if success:
-            return True, "Withdrawal successful."
-        else:
-            return False, "Insufficient funds or invalid amount."
+        """
+        O(1) - Withdraws money from the specified account. Delegates to Account.withdraw().
+        Args: account_number (int), amount (float)
+        Returns: bool - True if successful, False if insufficient balance
+        """
+        account = self.__accounts.get(account_number)
+        return account.withdraw(amount)
 
     def transfer(self, from_account_number, to_account_number, amount):
-        """O(1) - Transfers money from one account to another."""
-        if from_account_number == to_account_number:
-            return False, "Cannot transfer to the same account."
-
-        from_acc = self.get_account(from_account_number)
-        to_acc = self.get_account(to_account_number)
-
-        if not from_acc:
-            return False, "Sender account not found."
-        if not to_acc:
-            return False, "Recipient account not found."
+        """
+        O(1) - Transfers money from one account to another. Updates both accounts atomically.
+        Args: from_account_number (int), to_account_number (int), amount (float)
+        Returns: bool - True if successful, False if invalid accounts or insufficient balance
+        """
+        from_account = self.__accounts.get(from_account_number)
+        to_account = self.__accounts.get(to_account_number)
         
-        if amount <= 0:
-            return False, "Transfer amount must be positive."
-        
-        if from_acc.get_balance() < amount:
-            return False, "Insufficient funds for transfer."
+        if from_account is None or to_account is None:
+            return False
 
-        # Perform the transfer
-        # First withdraw from sender
-        withdraw_success = from_acc.transfer_out(amount, to_acc.get_holder_name())
-        if withdraw_success:
-            # Then deposit to recipient
-            deposit_success = to_acc.transfer_in(amount, from_acc.get_holder_name())
-            if deposit_success:
-                return True, "Transfer successful."
-            else:
-                # Rollback logic if deposit fails unexpectedly
-                # This ensures data consistency
-                from_acc.deposit(amount)
-                return False, "Transfer failed during recipient deposit. Changes rolled back."
-        
-        return False, "Transfer failed."
+        # Transfer işlemi
+        success = from_account.transfer_out(amount, to_account.get_holder_name())
+        if success:
+            to_account.transfer_in(amount, from_account.get_holder_name())
+            return True
+        return False
 
     def get_account_balance(self, account_number):
-        """O(1) - Returns the balance of the specified account."""
-        account = self.get_account(account_number)
-        if not account:
+        """
+        O(1) - Returns the balance of the specified account using O(1) dictionary lookup.
+        Args: account_number (int)
+        Returns: float or None if account not found
+        """
+        account = self.__accounts.get(account_number)
+        if account is None:
             return None
         return account.get_balance()
 
     def get_transaction_history(self, account_number):
-        """O(n) - Returns the transaction history of the specified account."""
-        account = self.get_account(account_number)
-        if not account:
+        """
+        O(K) - Returns the transaction history of the specified account. K = number of transactions in the account.
+        Args: account_number (int)
+        Returns: list of Transaction objects or None if account not found
+        """
+        account = self.__accounts.get(account_number)
+        if account is None:
             return None
         return account.get_transaction_history()
 
     def list_all_accounts(self):
-        """O(N) - Returns a list of all accounts formatted as strings."""
-        return [str(acc) for acc in self.accounts.values()]
+        """
+        O(N) - Returns a list of all accounts in the bank. N = number of accounts.
+        Returns: list of Account objects
+        """
+        return list(self.__accounts.values())
 
     def get_total_balance(self):
-        """O(N) - Returns the sum of balances from all accounts in the bank."""
-        return sum(acc.get_balance() for acc in self.accounts.values())
+        """
+        O(N) - Calculates the total balance across all accounts in the bank. N = number of accounts.
+        Returns: float
+        """
+        total = sum(account.get_balance() for account in self.__accounts.values())
+        return total
 
-    def search_accounts_by_holder_name(self, name):
-        """O(N) - Returns a list of accounts whose holder name contains the search string."""
-        if not name:
-            return []
-        name_lower = name.lower()
-        return [acc for acc in self.accounts.values() if name_lower in acc.get_holder_name().lower()]
+    def search_accounts_by_holder_name(self, holder_name):
+        """
+        O(N) - Searches for accounts where holder name contains the given string (case-insensitive). N = number of accounts.
+        Args: holder_name (str)
+        Returns: list of Account objects matching the search criteria
+        """
+        results = []
+        for account in self.__accounts.values():
+            if holder_name.lower() in account.get_holder_name().lower():
+                results.append(account)
+        return results
+
+    def __str__(self):
+        """O(N) - Returns a formatted string representation of the bank showing total accounts and assets. N = number of accounts."""
+        return (f"Total Accounts: {len(self.__accounts)} | "
+                f"Total Assets: {self.get_total_balance()}₺")

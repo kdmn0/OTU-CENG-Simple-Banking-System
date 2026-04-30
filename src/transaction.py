@@ -23,6 +23,7 @@ Made by kıdı :D
 
 from datetime import datetime
 
+
 class Transaction:
     def __init__(self, type, amount, new_balance, description=""):
         """O(1) - Initializes a transaction with timestamp, type, amount, and new balance."""
@@ -37,13 +38,14 @@ class Transaction:
         return (f"[{self.timestamp.strftime('%Y-%m-%d %X')}] "
                 f"{self.type}: {self.amount}₺ | "
                 f"Balance: {self.new_balance}₺ |")
-    
+
+
 class TransactionStack:
     def __init__(self):
         """O(1) - Initializes an empty stack to store transactions."""
         self.items = []
 
-    def push(self,transaction): 
+    def push(self, transaction): 
         """O(1) - This function adds the new operation to stack."""
         self.items.append(transaction)
 
@@ -52,13 +54,13 @@ class TransactionStack:
         if self.isEmpty():
             return "Stack is Empty"
         return self.items.pop()
-    
+
     def peek(self):
         """O(1) - This function shows the last operation in the stack without removing."""
         if self.isEmpty():
             return "Stack is Empty"
         return self.items[-1]
-    
+
     def isEmpty(self):
         """O(1) - This function checks stack is empty or not."""
         return len(self.items) == 0
@@ -66,11 +68,11 @@ class TransactionStack:
     def size(self):
         """O(1) - This function returns the size of stack."""
         return len(self.items)
-    
+
     def get_transaction_history(self):
         """O(n) - This function returns the transaction list in reverse order to display the most recent transactions first."""
         return self.items[::-1]
-    
+
     def clear_stack(self):
         """O(1) - This function removes all transactions from the stack, making it empty."""
         self.items.clear()
