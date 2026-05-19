@@ -37,15 +37,16 @@ class BankingUI:
 
     def display_menu(self):
         """O(1) - Displays the main menu with login, account creation, and admin options."""
-        print("\n" + "="*50)
+        print("\n" + "="*45)
         print("   BANKING SYSTEM - MAIN MENU")
-        print("="*50)
+        print("="*45)
         print("1. Create New Account")
         print("2. Login to Account")
         print("3. List All Accounts")
-        print("4. Admin View (All Accounts Info)")
-        print("5. Exit")
-        print("="*50)
+        print("4. List Accounts by Balance (Bubble Sort)")
+        print("5. Admin View (All Accounts Info)")
+        print("6. Exit")
+        print("="*45)
 
     def display_account_menu(self):
         """O(1) - Displays the account menu showing account details and transaction options."""
@@ -68,6 +69,9 @@ class BankingUI:
 
     def create_account(self):
         """O(1) - Prompts user for account holder name and initial balance, then creates a new account in the bank."""
+
+        self.clear_screen()
+        
         print("\n--- CREATE NEW ACCOUNT ---")
         holder_name = input("Enter holder name: ").strip()
         if not holder_name:
@@ -87,10 +91,13 @@ class BankingUI:
         if account_number:
             print(f"✓ Account created! Account #: {account_number}")
         else:
-            print("❌ Failed to create account!")
+            print("❌ Failed to create account! (This name might already be taken)")
 
     def login_account(self):
         """O(1) - Prompts user for account number and logs in if account exists. Sets current_user_account."""
+
+        self.clear_screen()
+
         print("\n--- LOGIN ---")
         try:
             account_number = int(input("Enter account number: "))
@@ -108,6 +115,9 @@ class BankingUI:
 
     def list_all_accounts(self):
         """O(N) - Lists all accounts in the system. N = number of accounts. Iterates through and displays each account."""
+
+        self.clear_screen()
+
         print("\n--- ALL ACCOUNTS ---")
         accounts = self.bank.list_all_accounts()
         if not accounts:
@@ -117,8 +127,25 @@ class BankingUI:
         for account in accounts:
             print(account)
 
+    def list_accounts_sorted(self):
+        """O(N^2) - Lists all accounts sorted by balance descending."""
+
+        self.clear_screen()
+
+        print("\n--- ACCOUNTS SORTED BY BALANCE ---")
+        accounts = self.bank.get_accounts_sorted_by_balance()
+        if not accounts:
+            print("No accounts in the system.")
+            return
+        
+        for account in accounts:
+            print(account)
+
     def admin_view(self):
         """O(N + K) - Displays detailed admin view of all accounts with recent transactions. N = accounts, K = total transactions."""
+
+        self.clear_screen()
+
         print("\n--- ADMIN VIEW ---")
         print(self.bank)
         print("\nAccount Details:")
@@ -133,6 +160,9 @@ class BankingUI:
 
     def deposit_money(self):
         """O(1) - Prompts user for deposit amount and deposits money into the current account. Validates positive amount."""
+
+        self.clear_screen()
+
         try:
             amount = float(input("Enter amount to deposit: "))
             if amount <= 0:
@@ -150,6 +180,9 @@ class BankingUI:
 
     def withdraw_money(self):
         """O(1) - Prompts user for withdrawal amount and withdraws money from current account if balance is sufficient."""
+
+        self.clear_screen()
+
         try:
             amount = float(input("Enter amount to withdraw: "))
             if amount <= 0:
@@ -167,6 +200,9 @@ class BankingUI:
 
     def transfer_money(self):
         """O(1) - Prompts for recipient account number and amount, then transfers money between accounts if valid."""
+
+        self.clear_screen()
+
         print("\n--- TRANSFER MONEY ---")
         try:
             to_account = int(input("Enter recipient account number: "))
@@ -190,6 +226,9 @@ class BankingUI:
 
     def view_transaction_history(self):
         """O(K) - Displays transaction history for the current account. K = number of transactions in the account."""
+
+        self.clear_screen()
+
         print("\n--- TRANSACTION HISTORY ---")
         transactions = self.bank.get_transaction_history(self.current_user_account)
         
@@ -215,8 +254,10 @@ class BankingUI:
                 elif choice == '3':
                     self.list_all_accounts()
                 elif choice == '4':
-                    self.admin_view()
+                    self.list_accounts_sorted()
                 elif choice == '5':
+                    self.admin_view()
+                elif choice == '6':
                     print("Goodbye!")
                     break
                 else:

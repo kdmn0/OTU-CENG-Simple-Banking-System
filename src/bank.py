@@ -31,12 +31,18 @@ class Bank:
 
     def create_account(self, holder_name, initial_balance=0):
         """
-        O(1) - Creates a new account with the given holder name and initial balance.
+        O(N) - Creates a new account. Checks if the holder name already exists (case-insensitive).
+        N = number of accounts.
         Args: holder_name (str), initial_balance (float)
-        Returns: account_number (int) or None if invalid input
+        Returns: account_number (int) or None if invalid input or name exists
         """
         if holder_name == "" or initial_balance < 0:
             return None
+            
+        # Aynı isimden başka hesap var mı kontrolü (Büyük/küçük harf duyarsız)
+        for account in self.__accounts.values():
+            if account.get_holder_name().lower() == holder_name.lower():
+                return None
         
         account_number = self.__next_account_number
         self.__next_account_number += 1
@@ -90,6 +96,9 @@ class Bank:
         
         if from_account is None or to_account is None:
             return False
+            
+        if from_account_number == to_account_number:
+            return False
 
         # Transfer işlemi
         success = from_account.transfer_out(amount, to_account.get_holder_name())
@@ -126,6 +135,23 @@ class Bank:
         Returns: list of Account objects
         """
         return list(self.__accounts.values())
+
+    def get_accounts_sorted_by_balance(self):
+        """
+        O(N^2) - Returns a list of all accounts sorted by their balance in descending order using Bubble Sort.
+        N = number of accounts.
+        """
+        accounts_list = list(self.__accounts.values())
+        n = len(accounts_list)
+        
+        # Bubble Sort algorithm
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                if accounts_list[j].get_balance() < accounts_list[j + 1].get_balance():
+                    # Swap işlemi
+                    accounts_list[j], accounts_list[j + 1] = accounts_list[j + 1], accounts_list[j]
+                    
+        return accounts_list
 
     def get_total_balance(self):
         """
