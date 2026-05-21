@@ -56,7 +56,7 @@ OTU-CENG-Simple-Banking-System/
 ## 🛠️ Prerequisites
 
 * **Python 3.x** must be installed on your system.
-* No external libraries are required (the project uses built-in modules like `datetime`, `os`, and `unittest`).
+* No external libraries are required (the project uses built-in modules like `datetime` and `os`).
 
 ## 💻 Compilation and Execution Steps
 
@@ -64,15 +64,16 @@ OTU-CENG-Simple-Banking-System/
 
 To start the banking system, you need to execute the `main.py` file. Open your terminal or command prompt and run the following commands:
 
-bash
+```bash
 cd OTU-CENG-Simple-Banking-System/src
 python main.py
+```
 
 Once the application starts, you can navigate through the interactive menus by typing the corresponding numbers.
 
 ### 2. Running the Unit Tests
 
-The project includes a comprehensive test suite using Python's built-in testing framework. To verify that all components are working correctly, run:
+The project includes a comprehensive test suite with custom test assertions. To verify that all components are working correctly, run:
 
 ```bash
 cd OTU-CENG-Simple-Banking-System/src
