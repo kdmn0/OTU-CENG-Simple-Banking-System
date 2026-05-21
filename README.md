@@ -2,7 +2,7 @@
 
 A console-based banking application built with Python using Object-Oriented Programming (OOP) principles and basic Data Structures.
 
-## 🚀 Features
+## Features
 
 * **Account Management:** Create new accounts and log in securely using account numbers.
 * **Financial Operations:** Deposit, withdraw, and transfer money between accounts with O(1) time complexity.
@@ -11,19 +11,20 @@ A console-based banking application built with Python using Object-Oriented Prog
 * **Admin View:** A comprehensive overview of total bank assets, total accounts, and the latest transactions for all users.
 * **Duplicate Prevention:** Case-insensitive validation to prevent multiple accounts with the same holder name.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 OTU-CENG-Simple-Banking-System/
 │
-├── src/                               # Source code directory
-│   ├── account.py                     # Account ADT - Individual account management
-│   ├── bank.py                        # Bank ADT - System-level operations
-│   ├── main.py                        # Entry point - Console UI
-│   ├── test_banking.py                # Automated test suite
-│   └── transaction.py                 # Transaction & TransactionStack ADTs
+├── src/                                          # Source code directory
+│   ├── account.py                                # Account ADT - Individual account management
+│   ├── bank.py                                   # Bank ADT - System-level operations
+│   ├── main.py                                   # Entry point - Console UI
+│   ├── test_banking.py                           # Automated test suite
+│   └── transaction.py                            # Transaction & TransactionStack ADTs
 │
-└── README.md                          # This file - Project documentation
+├── CENG110 - Simle Banking System Report.pdf     # Project Report
+└── README.md                                     # This file - Project documentation
 ```
 
 ### File Descriptions
@@ -53,12 +54,12 @@ OTU-CENG-Simple-Banking-System/
   - Custom assert_true() and assert_equal() methods
   - Tests for normal cases, edge cases, invalid inputs, and duplicate records
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 * **Python 3.x** must be installed on your system.
 * No external libraries are required (the project uses built-in modules like `datetime` and `os`).
 
-## 💻 Compilation and Execution Steps
+## Compilation and Execution Steps
 
 ### 1. Running the Banking Application
 
